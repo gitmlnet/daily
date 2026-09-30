@@ -1,0 +1,11 @@
+import {BarChart3,BookOpen,CalendarDays,CheckCircle2,Clock3} from "lucide-react";import type{AppData}from"../types";import{formatDuration,localDate}from"../lib/storage";import{Empty,Metric,PlanItem,SectionHead,SessionItem}from"../components/UI";
+type Props={data:AppData;go:(page:any)=>void};
+export default function Dashboard({data,go}:Props){
+ const date=localDate(),sessions=data.sessions.filter(s=>s.date===date),plans=data.plans.filter(p=>p.date===date),minutes=sessions.reduce((n,s)=>n+s.duration,0),completed=plans.filter(p=>p.progress===100).length;
+ return <div className="stack"><section className="hero-card"><div><span className="eyebrow">TODAY • {date}</span><h2>Make the time you study count.</h2><p>Log a session in seconds, keep your plan visible, and let the tracker handle the math.</p></div><button className="secondary" onClick={()=>go("daily")}>+ Add study session</button></section>
+ <div className="metrics"><Metric icon={Clock3} label="Study time" value={formatDuration(minutes)}/><Metric icon={BookOpen} label="Sessions" value={String(sessions.length)}/><Metric icon={CalendarDays} label="Today's plans" value={String(plans.length)}/><Metric icon={CheckCircle2} label="Completed" value={String(completed)}/></div>
+ <div className="grid-2"><section className="card"><SectionHead eyebrow="TODAY'S LOG" title="Recent sessions" action="View history" onAction={()=>go("history")}/>{sessions.length?<div className="session-list">{sessions.slice().reverse().slice(0,6).map(s=><SessionItem s={s} key={s.id}/>)}</div>:<Empty icon={Clock3} title="No study sessions yet" text="Start with your first session today." action="Log first session" onClick={()=>go("daily")}/>}</section>
+ <section className="card"><SectionHead eyebrow="PLAN" title="Today's targets" action="Open planning" onAction={()=>go("planning")}/>{plans.length?<div className="plan-list">{plans.map(p=><PlanItem p={p} key={p.id}/>)}</div>:<Empty icon={CalendarDays} title="Nothing planned today" text="Create a target so the daily log can surface it." action="Plan study" onClick={()=>go("planning")}/>}</section></div>
+ <section className="quick-tip"><BarChart3 size={18}/><div><b>Tip</b><span>Keep targets specific enough to act on, but use the topic field as flexible notes rather than a strict match.</span></div></section>
+ </div>
+}
