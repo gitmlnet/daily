@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from "react";import type { ReactNode } from "react";
 import type { Dispatch,SetStateAction } from "react";
 import { Search,ChevronDown,Check } from "lucide-react";
 import { getPaper,getSubject,syllabus } from "../data/syllabus";
@@ -17,3 +17,4 @@ export function StudyFields({subjectId,setSubject,paperId,setPaper,chapterId,set
  <Picker label="Paper" value={paperId} placeholder="Choose paper" disabled={!subject} items={subject?.papers.map(p=>({id:p.id,label:p.name}))||[]} onChange={id=>{setPaper(id);setChapter("")}}/>
  <Picker label="Chapter" value={chapterId} placeholder={paper?"Choose chapter":"Select subject and paper first"} disabled={!paper} items={paper?.chapters.map(c=>({id:c.id,label:c.name}))||[]} onChange={setChapter}/></>
 }
+export function Field({label,children}:{label:string;children:ReactNode}){return <label className="field"><span>{label}</span>{children}</label>}
