@@ -14,6 +14,6 @@ export async function saveData(data:AppData){try{const db=await openDb();await n
 export const uid=()=>globalThis.crypto?.randomUUID?.()||`${Date.now()}-${Math.random().toString(36).slice(2)}`;
 export const localDate=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`};
 export function addDays(date:string,days:number){const d=new Date(date+"T12:00:00");d.setDate(d.getDate()+days);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}
-export function minutesBetween(start:string,end:string){const [sh,sm]=start.split(":").map(Number),[eh,em]=end.split(":").map(Number);let a=sh*60+sm,b=eh*60+em;if(b<=a)b+=1440;return b-a}
+export function minutesBetween(start:string,end:string){const [sh,sm]=start.split(":").map(Number),[eh,em]=end.split(":").map(Number);let a=sh*60+sm,b=eh*60+em;if(b===a)return 0;if(b<a)b+=1440;return b-a}
 export function formatDuration(total:number){const h=Math.floor(total/60),m=total%60;return h?m?`${h} hr ${m} min`:`${h} hr`:`${m} min`}
 export function formatTime(value:string){const [h,m]=value.split(":").map(Number);return `${h%12||12}:${String(m).padStart(2,"0")} ${h>=12?"PM":"AM"}`}
