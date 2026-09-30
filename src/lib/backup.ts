@@ -10,5 +10,8 @@ export function parseBackup(raw:string):AppData{
  const safePlan=(p:any)=>p&&typeof p.id==="string"&&typeof p.date==="string"&&typeof p.subjectId==="string"&&typeof p.paperId==="string"&&typeof p.chapterId==="string"&&typeof p.topic==="string"&&Number.isInteger(p.progress)&&p.progress>=0&&p.progress<=100&&p.reminder&&typeof p.reminder.enabled==="boolean";
  const safeSession=(s:any)=>s&&typeof s.id==="string"&&typeof s.date==="string"&&typeof s.subjectId==="string"&&typeof s.paperId==="string"&&typeof s.chapterId==="string"&&typeof s.start==="string"&&typeof s.end==="string"&&Number.isFinite(s.duration)&&s.duration>0&&typeof s.topic==="string";
  if(!parsed.sessions.every(safeSession)||!parsed.plans.every(safePlan))throw new Error("Backup contains invalid records");
+for(const s of parsed.sessions){if(!getSubject(s.subjectId)||!getPaper(s.subjectId,s.paperId)||!getChapter(s.subjectId,s.paperId,s.chapterId))throw new Error("Backup references unknown syllabus records")}
+for(const p of parsed.plans){if(!getSubject(p.subjectId)||!getPaper(p.subjectId,p.paperId)||!getChapter(p.subjectId,p.paperId,p.chapterId))throw new Error("Backup references unknown syllabus records")}
+
  return {version:1,sessions:parsed.sessions,plans:parsed.plans,settings:{theme:parsed.settings?.theme==="dark"?"dark":"light"}};
 }
