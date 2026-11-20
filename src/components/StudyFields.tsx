@@ -1,20 +1,20 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ReactNode, Dispatch, SetStateAction } from "react";
 import { Search, ChevronDown, Check } from "lucide-react";
 import { getPaper, getSubject, syllabus } from "../data/syllabus";
 
 function Picker({label,value,placeholder,disabled,items,onChange}:{label:string;value:string;placeholder:string;disabled?:boolean;items:{id:string;label:string}[];onChange:(id:string)=>void}){
-  const [open,setOpen]=useState(false),[q,setQ]=useState("");
+  const [open,setOpen]=useState(false),[q,setQ]=useState("");\n  const root=useRef<HTMLDivElement>(null),trigger=useRef<HTMLButtonElement>(null);\n  useEffect(()=>{if(!open)return;const outside=(event:PointerEvent)=>{if(root.current&&!root.current.contains(event.target as Node))setOpen(false)};const escape=(event:KeyboardEvent)=>{if(event.key==="Escape"){setOpen(false);trigger.current?.focus()}};document.addEventListener("pointerdown",outside);document.addEventListener("keydown",escape);return()=>{document.removeEventListener("pointerdown",outside);document.removeEventListener("keydown",escape)}},[open]);
   const selected=items.find(x=>x.id===value);
   const filtered=items.filter(x=>x.label.toLowerCase().includes(q.toLowerCase()));
   return <div className="field picker-field">
     <span>{label}</span>
-    <div className="picker">
-      <button type="button" className={"picker-trigger "+(open?"open":"")} disabled={disabled} onClick={()=>{setOpen(v=>!v);setQ("")}} aria-haspopup="listbox" aria-expanded={open}>
+    <div className="picker" ref={root}>
+      <button ref={trigger} type="button" className={"picker-trigger "+(open?"open":"")} disabled={disabled} onClick={()=>{setOpen(v=>!v);setQ("")}} aria-haspopup="listbox" aria-expanded={open}>
         <span>{selected?.label||placeholder}</span><ChevronDown size={17}/>
       </button>
       {open&&!disabled&&<div className="picker-menu" role="listbox">
-        <div className="picker-search"><Search size={15}/><input autoFocus value={q} onChange={e=>setQ(e.target.value)} placeholder={"Search "+label.toLowerCase()+"…"} onKeyDown={e=>{if(e.key==="Escape")setOpen(false)}}/></div>
+        <div className="picker-search"><Search size={15}/><input autoFocus value={q} onChange={e=>setQ(e.target.value)} placeholder={"Search "+label.toLowerCase()+"…"} onKeyDown={e=>{if(e.key==="Escape"){setOpen(false);trigger.current?.focus()}}}/></div>
         <div className="picker-options">{filtered.length?filtered.map(item=><button type="button" role="option" aria-selected={item.id===value} key={item.id} onClick={()=>{onChange(item.id);setOpen(false);setQ("")}}><span>{item.label}</span>{item.id===value&&<Check size={15}/>}</button>):<div className="picker-empty">No matches found.</div>}</div>
       </div>}
     </div>
