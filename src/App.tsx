@@ -23,6 +23,7 @@ export default function App() {
   const [collapsed, setCollapsed] = useState(() => { try { return window.localStorage.getItem("hsc-sidebar-collapsed") === "true"; } catch { return false; } });
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const sidebarRef = useRef<HTMLElement>(null);
+  const mobileMenuWasOpen = useRef(false);
 
   useEffect(() => {
     loadData().then(d => { setData(d); document.documentElement.dataset.theme = d.settings.theme; })
@@ -60,7 +61,8 @@ export default function App() {
   }, [data.plans, ready]);
 
   useEffect(() => {
-    if (!mobileMenu) { menuButtonRef.current?.focus(); return; }
+    if (!mobileMenu) { if (mobileMenuWasOpen.current) menuButtonRef.current?.focus(); mobileMenuWasOpen.current = false; return; }
+    mobileMenuWasOpen.current = true;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     sidebarRef.current?.querySelector<HTMLButtonElement>("nav button")?.focus();
