@@ -20,7 +20,7 @@ export default function App() {
   const [page, setPage] = useState<Page>("dashboard");
   const [ready, setReady] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(() => { try { return window.localStorage.getItem("hsc-sidebar-collapsed") === "true"; } catch { return false; } });
 
   useEffect(() => {
     loadData().then(d => { setData(d); document.documentElement.dataset.theme = d.settings.theme; })
