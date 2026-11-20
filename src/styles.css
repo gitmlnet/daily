@@ -55,20 +55,14 @@ input[type="range"]{accent-color:var(--accent);cursor:pointer}
 input[type="checkbox"]{accent-color:var(--accent);cursor:pointer}
 .sidebar-backdrop{position:fixed;inset:0;z-index:34;background:rgba(5,12,24,.52);border:0;backdrop-filter:blur(2px)}
 @media(min-width:701px) and (max-width:1080px){
- .sidebar{width:82px;padding-inline:11px}
- .sidebar .brand{padding-inline:9px;justify-content:center}
- .sidebar .brand-copy,.sidebar .sidebar-foot,.sidebar nav button span{display:none}
- .sidebar .sidebar-collapse{display:none}
- .sidebar nav button{justify-content:center;padding-inline:0}
- .sidebar nav button.active:before{left:-11px}
- .sidebar nav button{position:relative}
- .sidebar nav button[title]:hover:after{content:attr(title);position:absolute;left:calc(100% + 12px);top:50%;transform:translateY(-50%);z-index:60;background:#101827;color:#fff;border-radius:7px;padding:7px 10px;font-size:11px;white-space:nowrap;box-shadow:0 8px 20px rgba(0,0,0,.2)}
- .sidebar-collapsed .sidebar{width:252px}
- .sidebar-collapsed .sidebar .brand{justify-content:flex-start;padding-inline:7px}
- .sidebar-collapsed .sidebar .brand-copy,.sidebar-collapsed .sidebar .sidebar-foot,.sidebar-collapsed .sidebar nav button span{display:initial}
- .sidebar-collapsed .sidebar .sidebar-foot{display:grid}
- .sidebar-collapsed .sidebar nav button{justify-content:flex-start;padding:11px 12px}
- .sidebar-collapsed .sidebar .sidebar-collapse{display:grid;position:static;background:transparent}
+ .sidebar{width:222px;padding-inline:15px}
+ .sidebar-collapsed .sidebar{width:82px;padding-inline:11px}
+ .sidebar-collapsed .sidebar .brand{padding-inline:9px;justify-content:center}
+ .sidebar-collapsed .sidebar .brand-copy,.sidebar-collapsed .sidebar .sidebar-foot,.sidebar-collapsed .sidebar nav button span{display:none}
+ .sidebar-collapsed .sidebar nav button{justify-content:center;padding-inline:0}
+ .sidebar-collapsed .sidebar nav button.active:before{left:-11px}
+ .sidebar-collapsed .sidebar nav button{position:relative}
+ .sidebar-collapsed .sidebar nav button[title]:hover:after,.sidebar-collapsed .sidebar nav button[title]:focus-visible:after{content:attr(title);position:absolute;left:calc(100% + 12px);top:50%;transform:translateY(-50%);z-index:60;background:#101827;color:#fff;border-radius:7px;padding:7px 10px;font-size:11px;white-space:nowrap;box-shadow:0 8px 20px rgba(0,0,0,.2)}
 }
 @media(max-width:700px){
  .sidebar{width:min(300px,88vw);height:100dvh;position:fixed;left:0;top:0;transform:translateX(-105%);transition:transform var(--motion-smooth) ease;box-shadow:25px 0 55px rgba(0,0,0,.24);padding:18px 15px}
