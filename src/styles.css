@@ -105,3 +105,8 @@ input[type="checkbox"]{accent-color:var(--accent);cursor:pointer}
  .sidebar{visibility:hidden;transition:transform var(--motion-smooth) ease,visibility 0s linear var(--motion-smooth)}
  .sidebar.open{visibility:visible;transition:transform var(--motion-smooth) ease,visibility 0s}
 }
+
+/* Keep the optional install action compact in the app header. */
+.header-actions .install-app{width:auto;min-height:38px;padding:8px 11px;white-space:nowrap;font-size:12px}
+@media(max-width:700px){.header-actions .install-app{width:auto;min-height:36px;padding:7px 9px}.header-actions{flex-wrap:nowrap}}
+@media(max-width:420px){.header-actions .install-app span{display:none}.header-actions .install-app{width:38px;padding:8px}}
