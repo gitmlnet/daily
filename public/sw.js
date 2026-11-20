@@ -1,5 +1,5 @@
 /* HSC Study Tracker offline app shell. Bump VERSION when changing cache behavior. */
-const VERSION = "v2";
+const VERSION = "v3";
 const CACHE_PREFIX = "hsc-study-tracker-";
 const CACHE_NAME = CACHE_PREFIX + VERSION;
 const APP_SCOPE = new URL("./", self.registration.scope);
@@ -15,7 +15,7 @@ self.addEventListener("install", (event) => {
     const candidates = [
       "manifest.webmanifest",
       "icon-192.svg",
-      "icon-512.svg",
+      "icon-512.svg",\n      "icon-192.png",\n      "icon-512.png",
       ...Array.from(html.matchAll(/(?:src|href)=["']([^"']+\.(?:js|css)(?:\?[^"']*)?)["']/g), match => match[1])
     ];
     const urls = [...new Set(candidates.map(path => new URL(path, APP_SCOPE).href))]
