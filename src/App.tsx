@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BarChart3, CalendarDays, Clock3, History as HistoryIcon, LayoutDashboard, Menu, Settings as SettingsIcon, Plus, PanelLeftClose, PanelLeftOpen, X } from "lucide-react";
 import type { AppData } from "./types";
 import { emptyData, loadData, saveData, localDate } from "./lib/storage";
@@ -21,6 +21,8 @@ export default function App() {
   const [ready, setReady] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
   const [collapsed, setCollapsed] = useState(() => { try { return window.localStorage.getItem("hsc-sidebar-collapsed") === "true"; } catch { return false; } });
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const sidebarRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     loadData().then(d => { setData(d); document.documentElement.dataset.theme = d.settings.theme; })
@@ -58,10 +60,23 @@ export default function App() {
   }, [data.plans, ready]);
 
   useEffect(() => {
-    if (!mobileMenu) return;
-    const onKeyDown = (event: KeyboardEvent) => { if (event.key === "Escape") setMobileMenu(false); };
+    if (!mobileMenu) { menuButtonRef.current?.focus(); return; }
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    sidebarRef.current?.querySelector<HTMLButtonElement>("nav button")?.focus();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") { setMobileMenu(false); return; }
+      if (event.key === "Tab" && sidebarRef.current) {
+        const selector = "button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex='-1'])";
+        const items = Array.from(sidebarRef.current.querySelectorAll<HTMLElement>(selector));
+        if (!items.length) return;
+        const first = items[0], last = items[items.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+      }
+    };
     window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
+    return () => { document.body.style.overflow = previousOverflow; window.removeEventListener("keydown", onKeyDown); };
   }, [mobileMenu]);
 
   if (!ready) return <div className="boot"><div className="logo">ST</div><b>Loading…</b></div>;
@@ -70,7 +85,7 @@ export default function App() {
   return (
     <div className={"app" + (collapsed ? " sidebar-collapsed" : "")}>
       {mobileMenu && <button className="sidebar-backdrop" aria-label="Close navigation" onClick={() => setMobileMenu(false)} />}
-      <aside className={"sidebar" + (mobileMenu ? " open" : "")} aria-label="Main navigation">
+      <aside id="main-navigation" ref={sidebarRef} className={"sidebar" + (mobileMenu ? " open" : "")} aria-label="Main navigation" aria-modal={mobileMenu || undefined} role={mobileMenu ? "dialog" : undefined}>
         <div className="brand">
           <div className="logo">ST</div>
           <div className="brand-copy"><strong>HSC Study Tracker</strong><small>Study smarter, one session at a time.</small></div>
@@ -89,7 +104,7 @@ export default function App() {
       <div className="main">
         <header>
           <div className="header-left">
-            <button className="icon-btn mobile-menu" onClick={() => setMobileMenu(v => !v)} aria-label={mobileMenu ? "Close navigation" : "Open navigation"} aria-expanded={mobileMenu}>
+            <button ref={menuButtonRef} className="icon-btn mobile-menu" onClick={() => setMobileMenu(v => !v)} aria-label={mobileMenu ? "Close navigation" : "Open navigation"} aria-expanded={mobileMenu} aria-controls="main-navigation">
               <Menu />
             </button>
             <div><span className="eyebrow">HSC STUDY TRACKER</span><h1>{currentLabel}</h1></div>
