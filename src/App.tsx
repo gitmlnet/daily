@@ -96,7 +96,7 @@ export default function App() {
         <nav>
           {nav.map(([id, label, Icon]) => (
             <button className={page === id ? "active" : ""} key={id} onClick={() => go(id)}
-              aria-current={page === id ? "page" : undefined} title={collapsed ? label : undefined}>
+              aria-current={page === id ? "page" : undefined} aria-label={collapsed ? label : undefined} title={collapsed ? label : undefined}>
               <Icon size={19} /><span>{label}</span>
             </button>
           ))}
