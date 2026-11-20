@@ -10,6 +10,11 @@ import Progress from "./pages/Progress";
 import Settings from "./pages/Settings";
 
 type Page = "dashboard" | "daily" | "planning" | "history" | "progress" | "settings";
+
+interface InstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: "accepted" | "dismissed"; platform: string }>;
+}
 const nav: [Page, string, typeof LayoutDashboard][] = [
   ["dashboard", "Dashboard", LayoutDashboard], ["daily", "Daily Log", Clock3],
   ["planning", "Planning", CalendarDays], ["history", "History", HistoryIcon],
@@ -18,7 +23,7 @@ const nav: [Page, string, typeof LayoutDashboard][] = [
 export default function App() {
   const [data, setData] = useState<AppData>(emptyData);
   const [page, setPage] = useState<Page>("dashboard");
-  const [ready, setReady] = useState(false);
+  const [ready, setReady] = useState(false);\n  const [installPrompt, setInstallPrompt] = useState<InstallPromptEvent | null>(null);\n  const [isInstalled, setIsInstalled] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
   const [collapsed, setCollapsed] = useState(() => { try { return window.localStorage.getItem("hsc-sidebar-collapsed") === "true"; } catch { return false; } });
   const menuButtonRef = useRef<HTMLButtonElement>(null);
