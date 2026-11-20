@@ -13,7 +13,7 @@ An offline-first, mobile-friendly Bangladesh HSC study tracker and planner. It r
 - IndexedDB persistence with a small localStorage fallback.
 - JSON backup/restore and CSV study-history export.
 - Light/dark theme.
-- PWA manifest + service worker for offline app-shell caching.
+- Installable PWA with standalone display, app icons, browser install prompt, versioned offline app-shell caching and update checks.\n- The app shell and its built JavaScript/CSS are cached after the first successful online load; study records continue to use the existing browser database.
 - Responsive mobile/tablet/desktop layouts and accessible native form controls plus keyboard-focusable searchable pickers.
 
 ## Technology
