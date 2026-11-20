@@ -1,5 +1,5 @@
 export function registerSW() {
-  if (!("serviceWorker" in navigator) || !window.isSecureContext) return;
+  if (!import.meta.env.PROD || !("serviceWorker" in navigator) || !window.isSecureContext) return;
 
   window.addEventListener("load", () => {
     const scriptUrl = new URL("sw.js", document.baseURI);
