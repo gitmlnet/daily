@@ -23,12 +23,43 @@ const nav: [Page, string, typeof LayoutDashboard][] = [
 export default function App() {
   const [data, setData] = useState<AppData>(emptyData);
   const [page, setPage] = useState<Page>("dashboard");
-  const [ready, setReady] = useState(false);\n  const [installPrompt, setInstallPrompt] = useState<InstallPromptEvent | null>(null);\n  const [isInstalled, setIsInstalled] = useState(false);
+  const [ready, setReady] = useState(false);
+  const [installPrompt, setInstallPrompt] = useState<InstallPromptEvent | null>(null);
+  const [isInstalled, setIsInstalled] = useState(false);
+  const [installPrompt, setInstallPrompt] = useState<InstallPromptEvent | null>(null);
+  const [isInstalled, setIsInstalled] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
   const [collapsed, setCollapsed] = useState(() => { try { return window.localStorage.getItem("hsc-sidebar-collapsed") === "true"; } catch { return false; } });
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const sidebarRef = useRef<HTMLElement>(null);
   const mobileMenuWasOpen = useRef(false);
+
+  useEffect(() => {
+    const isStandalone = window.matchMedia("(display-mode: standalone)").matches
+      || Boolean((navigator as Navigator & { standalone?: boolean }).standalone);
+    setIsInstalled(isStandalone);
+    const handlePrompt = (event: Event) => {
+      event.preventDefault();
+      setInstallPrompt(event as InstallPromptEvent);
+    };
+    const handleInstalled = () => {
+      setIsInstalled(true);
+      setInstallPrompt(null);
+    };
+    window.addEventListener("beforeinstallprompt", handlePrompt);
+    window.addEventListener("appinstalled", handleInstalled);
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handlePrompt);
+      window.removeEventListener("appinstalled", handleInstalled);
+    };
+  }, []);
+
+  const installApp = async () => {
+    if (!installPrompt) return;
+    await installPrompt.prompt();
+    const choice = await installPrompt.userChoice;
+    if (choice.outcome === "accepted") setInstallPrompt(null);
+  };
 
   useEffect(() => {
     loadData().then(d => { setData(d); document.documentElement.dataset.theme = d.settings.theme; })
@@ -117,6 +148,7 @@ export default function App() {
             <div><span className="eyebrow">HSC STUDY TRACKER</span><h1>{currentLabel}</h1></div>
           </div>
           <div className="header-actions">
+            {installPrompt && !isInstalled && <button className="secondary install-app" onClick={installApp}><Plus size={17} /><span>Install app</span></button>}
             <button className="icon-btn desktop-sidebar-toggle" onClick={() => setCollapsed(v => !v)} aria-label={collapsed ? "Expand navigation" : "Collapse navigation"} title={collapsed ? "Expand navigation" : "Collapse navigation"}>
               {collapsed ? <PanelLeftOpen size={19} /> : <PanelLeftClose size={19} />}
             </button>
