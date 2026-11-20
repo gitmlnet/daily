@@ -100,3 +100,8 @@ input[type="checkbox"]{accent-color:var(--accent);cursor:pointer}
  .sidebar-collapsed .sidebar nav button{justify-content:flex-start;padding:11px 12px}
  .sidebar-collapsed .sidebar nav button span{display:block}
 }
+
+@media(max-width:700px){
+ .sidebar{visibility:hidden;transition:transform var(--motion-smooth) ease,visibility 0s linear var(--motion-smooth)}
+ .sidebar.open{visibility:visible;transition:transform var(--motion-smooth) ease,visibility 0s}
+}
