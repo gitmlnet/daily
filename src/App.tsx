@@ -26,8 +26,6 @@ export default function App() {
   const [ready, setReady] = useState(false);
   const [installPrompt, setInstallPrompt] = useState<InstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState(false);
-  const [installPrompt, setInstallPrompt] = useState<InstallPromptEvent | null>(null);
-  const [isInstalled, setIsInstalled] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
   const [collapsed, setCollapsed] = useState(() => { try { return window.localStorage.getItem("hsc-sidebar-collapsed") === "true"; } catch { return false; } });
   const menuButtonRef = useRef<HTMLButtonElement>(null);
