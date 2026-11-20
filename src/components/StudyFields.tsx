@@ -4,7 +4,9 @@ import { Search, ChevronDown, Check } from "lucide-react";
 import { getPaper, getSubject, syllabus } from "../data/syllabus";
 
 function Picker({label,value,placeholder,disabled,items,onChange}:{label:string;value:string;placeholder:string;disabled?:boolean;items:{id:string;label:string}[];onChange:(id:string)=>void}){
-  const [open,setOpen]=useState(false),[q,setQ]=useState("");\n  const root=useRef<HTMLDivElement>(null),trigger=useRef<HTMLButtonElement>(null);\n  useEffect(()=>{if(!open)return;const outside=(event:PointerEvent)=>{if(root.current&&!root.current.contains(event.target as Node))setOpen(false)};const escape=(event:KeyboardEvent)=>{if(event.key==="Escape"){setOpen(false);trigger.current?.focus()}};document.addEventListener("pointerdown",outside);document.addEventListener("keydown",escape);return()=>{document.removeEventListener("pointerdown",outside);document.removeEventListener("keydown",escape)}},[open]);
+  const [open,setOpen]=useState(false),[q,setQ]=useState("");
+  const root=useRef<HTMLDivElement>(null),trigger=useRef<HTMLButtonElement>(null);
+  useEffect(()=>{if(!open)return;const outside=(event:PointerEvent)=>{if(root.current&&!root.current.contains(event.target as Node))setOpen(false)};const escape=(event:KeyboardEvent)=>{if(event.key==="Escape"){setOpen(false);trigger.current?.focus()}};document.addEventListener("pointerdown",outside);document.addEventListener("keydown",escape);return()=>{document.removeEventListener("pointerdown",outside);document.removeEventListener("keydown",escape)}},[open]);
   const selected=items.find(x=>x.id===value);
   const filtered=items.filter(x=>x.label.toLowerCase().includes(q.toLowerCase()));
   return <div className="field picker-field">
