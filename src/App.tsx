@@ -27,6 +27,9 @@ export default function App() {
       .finally(() => setReady(true));
   }, []);
   useEffect(() => {
+    try { window.localStorage.setItem("hsc-sidebar-collapsed", String(collapsed)); } catch { /* Navigation remains usable without saved preference. */ }
+  }, [collapsed]);
+  useEffect(() => {
     if (!ready) return;
     saveData(data);
     document.documentElement.dataset.theme = data.settings.theme;
