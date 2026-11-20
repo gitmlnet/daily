@@ -74,9 +74,6 @@ export default function App() {
         <div className="brand">
           <div className="logo">ST</div>
           <div className="brand-copy"><strong>HSC Study Tracker</strong><small>Study smarter, one session at a time.</small></div>
-          <button className="sidebar-collapse icon-btn" onClick={() => setCollapsed(v => !v)} aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"} title={collapsed ? "Expand sidebar" : "Collapse sidebar"}>
-            {collapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
-          </button>
           <button className="sidebar-close icon-btn" onClick={() => setMobileMenu(false)} aria-label="Close navigation"><X size={19} /></button>
         </div>
         <nav>
