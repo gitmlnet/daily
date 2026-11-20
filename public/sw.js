@@ -1,30 +1,31 @@
-/* HSC Study Tracker offline app shell. Bump VERSION when changing cache behavior. */
-const VERSION = "v4";
+/* HSC Study Tracker offline app shell. Bump VERSION for every release. */
+const VERSION = "v5";
 const CACHE_PREFIX = "hsc-study-tracker-";
 const CACHE_NAME = CACHE_PREFIX + VERSION;
-const APP_SCOPE = new URL("./", self.registration.scope);
+const APP_SCOPE = new URL("/daily/", self.location.origin);
 
 self.addEventListener("install", (event) => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
-    const pageResponse = await fetch(APP_SCOPE.href, { cache: "reload" });
-    if (!pageResponse.ok) throw new Error("Unable to load the app shell");
-    await cache.put(APP_SCOPE.href, pageResponse.clone());
+    const shellResponse = await fetch(APP_SCOPE.href, { cache: "reload" });
+    if (!shellResponse.ok) throw new Error("Unable to fetch the Study Tracker app shell");
+    await cache.put(APP_SCOPE.href, shellResponse.clone());
 
-    const html = await pageResponse.clone().text();
-    const candidates = [
-      "manifest.webmanifest",
-      "icon-192.png",
-      "icon-512.png",
+    const html = await shellResponse.clone().text();
+    const assetPaths = [
+      "/daily/manifest.webmanifest",
+      "/daily/icon-192.png",
+      "/daily/icon-512.png",
       ...Array.from(
         html.matchAll(/(?:src|href)=["']([^"']+\.(?:js|css)(?:\?[^"']*)?)["']/g),
         (match) => match[1]
       )
     ];
-    const urls = [...new Set(candidates.map((path) => new URL(path, APP_SCOPE).href))]
-      .filter((url) => url.startsWith(APP_SCOPE.href) && new URL(url).origin === self.location.origin);
+    const assetUrls = [...new Set(assetPaths.map((path) => new URL(path, APP_SCOPE).href))]
+      .filter((url) => new URL(url).origin === self.location.origin && url.startsWith(APP_SCOPE.href));
 
-    await Promise.all(urls.map(async (url) => {
+    // Optional assets must never prevent the service worker from installing.
+    await Promise.allSettled(assetUrls.map(async (url) => {
       const response = await fetch(url, { cache: "reload" });
       if (response.ok) await cache.put(url, response);
     }));
@@ -43,14 +44,9 @@ self.addEventListener("activate", (event) => {
   })());
 });
 
-self.addEventListener("message", (event) => {
-  if (event.data === "SKIP_WAITING") self.skipWaiting();
-});
-
 self.addEventListener("fetch", (event) => {
   const request = event.request;
   if (request.method !== "GET") return;
-
   const url = new URL(request.url);
   if (url.origin !== self.location.origin || !url.href.startsWith(APP_SCOPE.href)) return;
 
